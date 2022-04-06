@@ -75,16 +75,6 @@ public class SelectAllOfTag : EditorWindow
 
         EditorUtility.SetDirty(rectTransform);
     }
-
-    public static void ApplyScale(RectTransform rectTransform, Vector2? additionalScale = null)
-    {
-        var scale = additionalScale is null ? Vector2.one : additionalScale.Value;
-
-        rectTransform.sizeDelta *= scale;
-        rectTransform.anchoredPosition *= scale;
-        rectTransform.localScale = Vector3.one;
-        EditorUtility.SetDirty(rectTransform);
-    }
 }
 
 #endif
