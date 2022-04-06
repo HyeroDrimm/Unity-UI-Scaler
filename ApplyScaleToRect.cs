@@ -6,14 +6,13 @@ using UnityEngine;
 
 public class SelectAllOfTag : EditorWindow
 {
-
-    [MenuItem("UI/Apply Scale To Selected Objects")]
-    private static void ApplyScaleToSelectedObjects()
+    [MenuItem("UI/Scaler/Apply Scale To Selected TransformRects")]
+    private static void ApplyScaleToSelectedRects()
     {
         for (int i = 0; i < Selection.objects.Length; ++i)
         {
             var obj = Selection.objects[i];
-            if (obj.GetType() == typeof(GameObject) && ((GameObject)obj).TryGetComponent(out RectTransform rectTransform))
+            if (obj is GameObject && ((GameObject)obj).TryGetComponent(out RectTransform rectTransform))
             {
                 Undo.RecordObject(rectTransform, "Apply Scale");
                 PrefabUtility.RecordPrefabInstancePropertyModifications(rectTransform);
@@ -23,13 +22,13 @@ public class SelectAllOfTag : EditorWindow
         Debug.Log("Scale applied for selected objects");
     }
 
-    [MenuItem("UI/Apply Scale To Selected Objects and its children")]
-    private static void ApplyScaleToSelectedObjectsAndItsChildren()
+    [MenuItem("UI/Scaler/Apply Scale To Selected TransformRects and their children")]
+    private static void ApplyScaleToSelectedTransformRectssAndTheirChildren()
     {
         for (int i = 0; i < Selection.objects.Length; ++i)
         {
             var obj = Selection.objects[i];
-            if (obj.GetType() == typeof(GameObject) && ((GameObject)obj).TryGetComponent(out RectTransform rectTransform))
+            if (obj is GameObject && ((GameObject)obj).TryGetComponent(out RectTransform rectTransform))
             {
                 ApplyScaleToAllChildren(rectTransform);
             }
@@ -37,43 +36,20 @@ public class SelectAllOfTag : EditorWindow
         Debug.Log("Scale applied for selected objects and their children");
     }
 
-    [MenuItem("UI/How Many Objects With Rects Are Selected?")]
-    private static void HowManyObjectsWithRectsAreSelected()
+    [MenuItem("UI/Scaler/How Many TransformRects Are Selected?")]
+    private static void HowManyRectTrasformsWithRectsAreSelected()
     {
         var counter = 0;
         for (int i = 0; i < Selection.objects.Length; ++i)
         {
             var obj = Selection.objects[i];
-            if (obj.GetType() == typeof(GameObject) && ((GameObject)obj).TryGetComponent(out RectTransform rectTransform))
-            {
+            if (obj is GameObject && ((GameObject)obj).TryGetComponent(out RectTransform rectTransform))
                 counter++;
-            }
         }
-        Debug.Log("Number of selected objects with RectTransform is: " + counter);
+        Debug.Log("Number of selected RectTransforms is: " + counter);
     }
 
-    private static void ApplyScaleToAllChildren(RectTransform rectTransform)
-    {
-        var scale = rectTransform.localScale;
-        Undo.RecordObject(rectTransform, "Apply Scale");
-        rectTransform.ApplyScale();
-
-        rectTransform.anchoredPosition *= scale;
-
-        if (rectTransform.TryGetComponent(out TMPro.TMP_Text text))
-        {
-            Undo.RecordObject(text, "Apply Scale");
-            text.fontSize *= Mathf.Min(scale.x, scale.y);
-        }
-
-        RectTransform[] childs = rectTransform.Cast<RectTransform>().ToArray();
-        for (int i = 0; i < childs.Length; ++i)
-        {
-            ApplyScaleToAllChildren(childs[i], scale);
-        }
-    }
-
-    private static void ApplyScaleToAllChildren(RectTransform rectTransform, Vector2 additionalScale)
+    private static void ApplyScaleToAllChildren(RectTransform rectTransform, Vector2 additionalScale = Vector2.one)
     {
         var scale = rectTransform.localScale * additionalScale;
         Undo.RecordObject(rectTransform, "Apply Scale");
