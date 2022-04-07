@@ -1,3 +1,8 @@
+// /------------------------------------------------------------------------\
+// | Copyright (C) 2022 by Wojciech Wroński                                 |
+// | This code is licensed under MIT license (see LICENSE.md for details)   |
+// \------------------------------------------------------------------------/
+
 using System.Linq;
 using TMPro;
 using UnityEditor;
