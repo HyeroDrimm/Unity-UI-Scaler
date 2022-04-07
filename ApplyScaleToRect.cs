@@ -1,6 +1,8 @@
 using System.Linq;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 #if UNITY_EDITOR
 
@@ -66,12 +68,51 @@ public class SelectAllOfTag : EditorWindow
         rectTransform.anchoredPosition *= scale;
         rectTransform.localScale = Vector3.one;
 
-        if (rectTransform.TryGetComponent(out TMPro.TMP_Text text))
+        #region SpecificComponent
+        // There is no precompile tag that tells compiler if there is TMP so you have to manage this manualy
+        if (rectTransform.TryGetComponent(out Text text))
         {
             Undo.RecordObject(text, "Apply Scale");
-            text.fontSize *= Mathf.Min(scale.x, scale.y);
+            text.fontSize = (int)(text.fontSize * Mathf.Min(scale.x, scale.y));
+        }
+        if (rectTransform.TryGetComponent(out ScrollRect scrollRect))
+        {
+            Undo.RecordObject(scrollRect, "Apply Scale");
+            scrollRect.horizontalScrollbarSpacing *= scale.x;
+            scrollRect.verticalScrollbarSpacing *= scale.y;
+        }
+        if (rectTransform.TryGetComponent(out HorizontalOrVerticalLayoutGroup layoutGroup))
+        {
+            Undo.RecordObject(layoutGroup, "Apply Scale");
+            layoutGroup.padding.left = (int)(layoutGroup.padding.left * scale.x);
+            layoutGroup.padding.right = (int)(layoutGroup.padding.right * scale.x);
+            layoutGroup.padding.top = (int)(layoutGroup.padding.top * scale.y);
+            layoutGroup.padding.bottom = (int)(layoutGroup.padding.bottom * scale.y);
+            layoutGroup.spacing *= Mathf.Min(scale.x, scale.y);
+        }
+        if (rectTransform.TryGetComponent(out Shadow shadow))
+        {
+            Undo.RecordObject(shadow, "Apply Scale");
+            shadow.effectDistance *= scale;
+        }
+        #region TMP
+        if (rectTransform.TryGetComponent(out TMP_Text TMPtext))
+        {
+            Undo.RecordObject(TMPtext, "Apply Scale");
+            TMPtext.fontSize *= Mathf.Min(scale.x, scale.y);
+            TMPtext.margin.Scale(new Vector4(scale.x, scale.y, scale.x, scale.y));
+            //TODO: Expand this shit 
+            //There are so many fields like bruh
         }
 
+        if (rectTransform.TryGetComponent(out TMP_InputField TMPInputfield))
+        {
+            Undo.RecordObject(TMPInputfield, "Apply Scale");
+            TMPInputfield.pointSize *= Mathf.Min(scale.x, scale.y);
+            // TODO: Same here cos fuck my time and fuck tmp
+        }
+        #endregion
+        #endregion
 
         EditorUtility.SetDirty(rectTransform);
     }
