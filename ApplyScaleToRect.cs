@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 #if UNITY_EDITOR
 
-public class SelectAllOfTag : EditorWindow
+public class UIScaler : EditorWindow
 {
     [MenuItem("Tools/UI/Scaler/Apply Scale To Selected RectTransforms and their children")]
     private static void ApplyScaleToSelectedRectTransformssAndTheirChildren()
@@ -106,15 +106,12 @@ public class SelectAllOfTag : EditorWindow
             Undo.RecordObject(TMPtext, "Apply Scale");
             TMPtext.fontSize *= Mathf.Min(scale.x, scale.y);
             TMPtext.margin.Scale(new Vector4(scale.x, scale.y, scale.x, scale.y));
-            //TODO: Expand this shit 
-            //There are so many fields like bruh
         }
 
         if (rectTransform.TryGetComponent(out TMP_InputField TMPInputfield))
         {
             Undo.RecordObject(TMPInputfield, "Apply Scale");
             TMPInputfield.pointSize *= Mathf.Min(scale.x, scale.y);
-            // TODO: Same here cos fuck my time and fuck tmp
         }
         #endregion
         #endregion
